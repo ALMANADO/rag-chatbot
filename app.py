@@ -25,112 +25,119 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 # Custom CSS
 st.markdown("""
     <style>
-    /* Global theme: Modern, clean, with subtle gradients */
+    /* Global theme: Soft pastel, clean, inspired by Say Halo's mood-based design */
     .stApp {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); /* Nice cyan-blue gradient for fresh vibe */
+        background: linear-gradient(135deg, #FEFEFE 0%, #F4EFF7 100%); /* Subtle white-to-light-pinkish gradient for airy feel */
     }
     
-    /* Sidebar enhancements */
+    /* Sidebar enhancements (unchanged as requested) */
     section[data-testid="stSidebar"] {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    /* Title styling */
+    /* Title styling: Soft, centered with subtle shadow */
     h1 {
-        color: #ffffff;
+        color: #333333;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         text-align: center;
+        font-weight: 300;
     }
     
     /* Subtitle/Caption: Center and style the upload instruction text */
     .stCaption {
         text-align: center !important;
-        color: #e0f7fa !important; /* Nice light cyan for readability */
+        color: #666666 !important; /* Soft gray for readability */
         font-size: 1.1rem;
         font-weight: 300;
         margin: 0.5rem 0;
         padding: 0 1rem;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        text-shadow: 0 1px 1px rgba(0,0,0,0.05);
     }
     
-    /* File uploader and buttons */
+    /* File uploader and buttons: Soft rounded with pastel accents */
     .stFileUploader label {
-        color: #ffffff;
-        font-weight: bold;
+        color: #555555;
+        font-weight: 400;
     }
     
     .stButton > button {
-        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        color: white;
-        border: none;
+        background: linear-gradient(45deg, #F35E5C, #F4EFF7); /* Inspired by palette pink-to-light */
+        color: #333333;
+        border: 1px solid rgba(243, 94, 92, 0.2);
         border-radius: 25px;
         padding: 0.5rem 1rem;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        transition: transform 0.2s;
+        font-weight: 400;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
     }
     
     .stButton > button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     
     /* Clear Chat button (secondary style) */
     .stButton > button[kind="secondary"] {
-        background: rgba(255, 255, 255, 0.2);
-        color: #ffffff;
+        background: rgba(243, 94, 92, 0.1);
+        color: #666666;
+        border: 1px solid rgba(243, 94, 92, 0.3);
     }
     
-    /* Chat messages: User and Assistant bubbles */
+    /* Chat messages: Soft rounded cards with pastel backgrounds */
     .stChatMessage {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
         padding: 1rem;
         margin: 0.5rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         backdrop-filter: blur(5px);
     }
     
-    /* User message */
+    /* User message: Light pinkish pastel */
     div[role="img"][aria-label="user"] + div > div {
-        background: linear-gradient(45deg, #a8edea, #fed6e3);
-        color: #333;
-        border-radius: 20px;
+        background: linear-gradient(45deg, #F4EFF7, #FEFEFE);
+        color: #333333;
+        border-radius: 18px;
+        border: 1px solid rgba(244, 239, 247, 0.5);
     }
     
-    /* Assistant message */
+    /* Assistant message: Soft gray pastel */
     div[role="img"][aria-label="assistant"] + div > div {
-        background: linear-gradient(45deg, #ffecd2, #fcb69f);
-        color: #333;
-        border-radius: 20px;
+        background: linear-gradient(45deg, #D6CD1, #B23A4);
+        color: #444444;
+        border-radius: 18px;
+        border: 1px solid rgba(214, 205, 1, 0.3);
     }
     
-    /* Warning/Info messages */
+    /* Warning/Info messages: Soft neutral tones */
     div[data-testid="stAlert"] {
-        background: rgba(255, 193, 7, 0.2);
-        border: 1px solid rgba(255, 193, 7, 0.5);
-        border-radius: 10px;
-        color: #ffffff;
+        background: rgba(243, 94, 92, 0.1);
+        border: 1px solid rgba(243, 94, 92, 0.3);
+        border-radius: 12px;
+        color: #666666;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
-    /* Chat input box */
+    /* Chat input box: Subtle rounded with light border */
     .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(214, 205, 1, 0.2); /* Light orchid haze border */
         border-radius: 25px;
-        color: #ffffff;
+        color: #333333;
         padding: 0.75rem;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
     }
     
     .stTextInput > div > div > input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(102, 102, 102, 0.7);
     }
     
-    /* Footer text */
+    /* Footer text: Muted and subtle */
     .css-1d391kg {
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(102, 102, 102, 0.8);
         font-size: 0.9rem;
     }
 </style>
@@ -138,7 +145,7 @@ st.markdown("""
 
 # Title & Description
 st.title("🤖 RAG Chatbot with Groq")
-st.title("Upload your documents and chat with them using ultra-fast LPU inference.")
+st.header("Upload your documents and chat with them using ultra-fast LPU inference.")
 
 # Session state initialization
 if "messages" not in st.session_state:
