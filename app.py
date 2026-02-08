@@ -81,7 +81,7 @@ if clear_btn:
     st.rerun()
 
 if process_btn:
-if uploaded_files:
+    if uploaded_files:
 with st.status("Processing documents...", expanded=True) as status:
     st.write("Loading files...")
 docs = []
