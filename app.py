@@ -86,7 +86,7 @@ if process_btn:
             st.write("Loading files...")
 docs = []
 for uploaded_file in uploaded_files:
-with tempfile.NamedTemporaryFile(
+    with tempfile.NamedTemporaryFile(
 delete=False,
 suffix=os.path.splitext(
 uploaded_file.name)[1]) as tmp:
