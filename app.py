@@ -122,7 +122,7 @@ state="complete",
 expanded=False)
 st.success(
 f"Indexed {len(docs)} documents ({len(splits)} chunks).")
-    else:
+else:
         st.warning("Please upload files first.")
 
     st.divider()
