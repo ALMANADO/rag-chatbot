@@ -122,8 +122,8 @@ state="complete",
 expanded=False)
 st.success(
 f"Indexed {len(docs)} documents ({len(splits)} chunks).")
-else:
-    st.warning("Please upload files first.")
+    else:
+        st.warning("Please upload files first.")
 
     st.divider()
     st.info("Powered by Groq LPU Inference | Built with LangChain & Streamlit")
@@ -139,10 +139,10 @@ with st.chat_message("user"):
     st.markdown(prompt)
 
 with st.chat_message("assistant"):
-if st.session_state.retriever is None:
-    response = "⚠️ Please upload and process documents in the sidebar first."
-else:
-    with st.spinner("Analyzing context..."):
+    if st.session_state.retriever is None:
+        response = "⚠️ Please upload and process documents in the sidebar first."
+    else:
+        with st.spinner("Analyzing context..."):
 try:
     groq_api_key = os.getenv("GROQ_API_KEY")
 if not groq_api_key:
