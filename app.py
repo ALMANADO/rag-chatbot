@@ -72,18 +72,18 @@ help="Drag and drop files here. Limit 200MB per file.")
 
 col1, col2 = st.columns(2)
 with col1:
-process_btn = st.button("🚀 Process", type="primary")
+    process_btn = st.button("🚀 Process", type="primary")
 with col2:
-clear_btn = st.button("🗑️ Clear Chat")
+    clear_btn = st.button("🗑️ Clear Chat")
 
 if clear_btn:
-st.session_state.messages = []
-st.rerun()
+    st.session_state.messages = []
+    st.rerun()
 
 if process_btn:
 if uploaded_files:
 with st.status("Processing documents...", expanded=True) as status:
-st.write("Loading files...")
+    st.write("Loading files...")
 docs = []
 for uploaded_file in uploaded_files:
 with tempfile.NamedTemporaryFile(
@@ -95,15 +95,15 @@ tmp_path = tmp.name
 
 try:
 if uploaded_file.type == "application/pdf":
-loader = PyPDFLoader(tmp_path)
+    loader = PyPDFLoader(tmp_path)
 else:
-loader = TextLoader(tmp_path, encoding="utf-8")
-docs.extend(loader.load())
+    loader = TextLoader(tmp_path, encoding="utf-8")
+    docs.extend(loader.load())
 finally:
 if os.path.exists(tmp_path):
-os.unlink(tmp_path)
+    os.unlink(tmp_path)
 
-st.write("Splitting text into chunks...")
+    st.write("Splitting text into chunks...")
 text_splitter = RecursiveCharacterTextSplitter(
 chunk_size=1000, chunk_overlap=200)
 splits = text_splitter.split_documents(docs)
@@ -123,10 +123,10 @@ expanded=False)
 st.success(
 f"Indexed {len(docs)} documents ({len(splits)} chunks).")
 else:
-st.warning("Please upload files first.")
+    st.warning("Please upload files first.")
 
-st.divider()
-st.info("Powered by Groq LPU Inference | Built with LangChain & Streamlit")
+    st.divider()
+    st.info("Powered by Groq LPU Inference | Built with LangChain & Streamlit")
 
 # Main Chat Interface
 for message in st.session_state.messages:
