@@ -121,7 +121,7 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 # Custom CSS (your original, unchanged)
 st.markdown(
     """
-    <style>
+<style>
 :root{
   --bg0:#05060a;
   --bg1:#0b0d14;
@@ -143,22 +143,31 @@ st.markdown(
   --r-md:14px;
 }
 
+html, body, [data-testid="stAppViewContainer"]{
+  color-scheme: dark !important;
+}
+
+body{
+  background: var(--bg0) !important;
+  color: var(--text) !important;
+}
+
 [data-testid="stAppViewContainer"]{
   background:
     radial-gradient(1200px 600px at 50% 20%, rgba(139,92,246,.16), transparent 55%),
     radial-gradient(900px 520px at 85% 75%, rgba(34,211,238,.12), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
-  color:var(--text);
-  position:relative;
-  overflow:hidden;
+    linear-gradient(180deg, var(--bg0), var(--bg1)) !important;
+  color: var(--text) !important;
+  position: relative;
+  overflow: hidden;
 }
 
 [data-testid="stAppViewContainer"]::before{
   content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
   background:
     radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.40) 50%, transparent 52%),
     radial-gradient(1px 1px at 22% 65%, rgba(255,255,255,.26) 50%, transparent 52%),
@@ -176,199 +185,248 @@ st.markdown(
 
 [data-testid="stAppViewContainer"]::after{
   content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  background:radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
 }
 
 [data-testid="stAppViewContainer"] > *{
-  position:relative;
-  z-index:1;
-}
-
-section.main > div{
-  max-width:1050px;
-  padding-top:1.2rem;
-  padding-bottom:2.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 header[data-testid="stHeader"]{
-  background:transparent;
+  background: transparent !important;
+}
+
+section.main > div{
+  max-width: 1050px;
+  padding-top: 1.2rem;
+  padding-bottom: 2.5rem;
 }
 
 section[data-testid="stSidebar"]{
-  background:rgba(10,12,18,.65) !important;
-  border-right:1px solid rgba(255,255,255,.06);
-  backdrop-filter:blur(14px);
+  background: rgba(10,12,18,.65) !important;
+  border-right: 1px solid rgba(255,255,255,.06) !important;
+  backdrop-filter: blur(14px);
 }
 
 section[data-testid="stSidebar"] *{
-  color:var(--text);
+  color: var(--text) !important;
 }
 
 h1{
-  text-align:center;
-  font-weight:650;
-  letter-spacing:-.02em;
-  margin-bottom:.2rem;
-  color:var(--text);
-  text-shadow:0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
+  text-align: center;
+  font-weight: 650;
+  letter-spacing: -.02em;
+  margin-bottom: .2rem;
+  color: var(--text) !important;
+  text-shadow: 0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
 }
 
 h2{
-  text-align:center;
-  font-weight:500;
-  color:var(--muted);
+  text-align: center;
+  font-weight: 500;
+  color: var(--muted) !important;
 }
 
 .stCaption, [data-testid="stCaptionContainer"]{
-  text-align:center !important;
-  color:var(--muted) !important;
+  text-align: center !important;
+  color: var(--muted) !important;
 }
 
 .stButton > button{
-  border-radius:999px !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  background:rgba(255,255,255,.06) !important;
-  color:var(--text) !important;
-  box-shadow:0 10px 26px rgba(0,0,0,.35);
-  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: var(--text) !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35) !important;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
 .stButton > button:hover{
-  transform:translateY(-1px);
-  border-color:rgba(139,92,246,.35) !important;
-  box-shadow:0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12);
+  transform: translateY(-1px);
+  border-color: rgba(139,92,246,.35) !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12) !important;
 }
 
 .stButton > button[kind="primary"]{
-  background:linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
-  border:1px solid rgba(139,92,246,.35) !important;
+  background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
+  border: 1px solid rgba(139,92,246,.35) !important;
 }
 
 .stButton > button[kind="secondary"]{
-  background:rgba(255,255,255,.04) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  color:var(--muted) !important;
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  color: var(--muted) !important;
 }
 
 [data-testid="stFileUploaderDropzone"]{
-  background:rgba(255,255,255,.05) !important;
-  border:1px dashed rgba(255,255,255,.18) !important;
-  border-radius:var(--r-xl) !important;
-  padding:14px 14px !important;
+  background: rgba(255,255,255,.05) !important;
+  border: 1px dashed rgba(255,255,255,.18) !important;
+  border-radius: var(--r-xl) !important;
+  padding: 14px 14px !important;
 }
 
 [data-testid="stFileUploaderDropzone"] small,
 [data-testid="stFileUploaderDropzone"] p,
 [data-testid="stFileUploaderDropzone"] span,
 [data-testid="stFileUploaderDropzone"] label{
-  color:rgba(233,238,247,.70) !important;
+  color: rgba(233,238,247,.70) !important;
 }
 
 [data-testid="stFileUploaderDropzone"] button{
-  border-radius:999px !important;
-  border:1px solid rgba(255,255,255,.14) !important;
-  background:rgba(255,255,255,.08) !important;
-  color:rgba(233,238,247,.92) !important;
-  padding:8px 14px !important;
-  line-height:1.1 !important;
-  font-weight:600 !important;
-  box-shadow:0 10px 22px rgba(0,0,0,.35) !important;
-  margin-top:10px !important;
-  width:auto !important;
-  max-width:100% !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.08) !important;
+  color: rgba(233,238,247,.92) !important;
+  padding: 8px 14px !important;
+  line-height: 1.1 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.35) !important;
+  margin-top: 10px !important;
+  width: auto !important;
+  max-width: 100% !important;
 }
 
 [data-testid="stFileUploaderDropzone"] button:hover{
-  border-color:rgba(139,92,246,.35) !important;
-  box-shadow:0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.12) !important;
-  transform:translateY(-1px);
+  border-color: rgba(139,92,246,.35) !important;
+  box-shadow: 0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.12) !important;
+  transform: translateY(-1px);
 }
 
 div[data-testid="stChatMessage"]{
-  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--r-xl);
-  box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset;
-  backdrop-filter:blur(12px);
-  padding:1rem 1rem;
-  margin:.65rem 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04)) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: var(--r-xl) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset !important;
+  backdrop-filter: blur(12px);
+  padding: 1rem 1rem !important;
+  margin: .65rem 0 !important;
 }
 
 div[role="img"][aria-label="user"] + div > div{
-  background:rgba(255,255,255,.06) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  border-radius:18px !important;
-  box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 18px !important;
 }
 
 div[role="img"][aria-label="assistant"] + div > div{
-  background:linear-gradient(180deg, rgba(139,92,246,.14), rgba(255,255,255,.05)) !important;
-  border:1px solid rgba(139,92,246,.20) !important;
-  border-radius:18px !important;
-  box-shadow:0 0 22px rgba(139,92,246,.12), 0 0 0 1px rgba(255,255,255,.03) inset;
+  background: linear-gradient(180deg, rgba(139,92,246,.14), rgba(255,255,255,.05)) !important;
+  border: 1px solid rgba(139,92,246,.20) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 0 22px rgba(139,92,246,.12) !important;
 }
 
 div[data-testid="stMarkdownContainer"] p,
 div[data-testid="stMarkdownContainer"] li{
-  color:var(--text);
-}
-
-div[data-testid="stStatusWidget"]{
-  background:rgba(255,255,255,.05) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  border-radius:var(--r-xl);
-  backdrop-filter:blur(12px);
+  color: var(--text) !important;
 }
 
 div[data-testid="stAlert"]{
-  background:rgba(255,255,255,.05) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  border-radius:var(--r-lg);
-  color:var(--text) !important;
-  box-shadow:0 10px 26px rgba(0,0,0,.35);
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: var(--r-lg) !important;
+  color: var(--text) !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35) !important;
 }
 
-[data-testid="stChatInput"]{
-  background:transparent !important;
+div[data-testid="stStatusWidget"]{
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: var(--r-xl) !important;
+  backdrop-filter: blur(12px);
+}
+
+[data-testid="stBottom"]{
+  background: transparent !important;
+}
+
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] form,
+[data-testid="stChatInput"] > div{
+  background: transparent !important;
+}
+
+[data-testid="stChatInput"] div[data-baseweb="textarea"],
+[data-testid="stChatInput"] div[data-baseweb="textarea"] > div{
+  background: transparent !important;
 }
 
 [data-testid="stChatInput"] textarea{
-  background:rgba(255,255,255,.06) !important;
-  border:1px solid rgba(255,255,255,.12) !important;
-  color:rgba(233,238,247,.95) !important;
-  border-radius:999px !important;
-  padding:12px 44px 12px 16px !important;
-  min-height:48px !important;
-  max-height:140px !important;
-  box-shadow:0 10px 24px rgba(0,0,0,.35) !important;
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  color: rgba(233,238,247,.95) !important;
+  border-radius: 999px !important;
+  padding: 12px 46px 12px 16px !important;
+  min-height: 48px !important;
+  max-height: 140px !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35) !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder{
-  color:rgba(233,238,247,.45) !important;
+  color: rgba(233,238,247,.45) !important;
+}
+
+[data-testid="stChatInput"] textarea:focus{
+  outline: none !important;
+  border-color: rgba(139,92,246,.35) !important;
+  box-shadow: 0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.10) !important;
 }
 
 [data-testid="stChatInputSubmitButton"]{
-  border-radius:999px !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  background:rgba(255,255,255,.06) !important;
-  box-shadow:0 10px 22px rgba(0,0,0,.30) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.06) !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.30) !important;
 }
 
 [data-testid="stChatInputSubmitButton"] svg{
-  fill:rgba(233,238,247,.85) !important;
+  fill: rgba(233,238,247,.85) !important;
 }
 
 [data-testid="stChatInputSubmitButton"]:hover{
-  border-color:rgba(34,211,238,.35) !important;
-  box-shadow:0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
+  border-color: rgba(34,211,238,.35) !important;
+  box-shadow: 0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
+}
+
+button[data-testid="stTooltipIcon"]{
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+
+button[data-testid="stTooltipIcon"]:hover{
+  border-color: rgba(139,92,246,.35) !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 0 14px rgba(139,92,246,.10) !important;
+}
+
+div[data-baseweb="tooltip"],
+div[data-baseweb="popover"]{
+  z-index: 100000 !important;
+}
+
+div[data-baseweb="tooltip"] > div,
+div[data-baseweb="popover"] > div{
+  background: rgba(12,14,22,.96) !important;
+  color: rgba(233,238,247,.92) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.55) !important;
+  backdrop-filter: blur(12px);
+  max-width: 320px !important;
+}
+
+div[data-baseweb="tooltip"] * ,
+div[data-baseweb="popover"] *{
+  color: rgba(233,238,247,.92) !important;
+  background: transparent !important;
 }
 
 a{
-  color:rgba(34,211,238,.95) !important;
+  color: rgba(34,211,238,.95) !important;
 }
 </style>
     """,
