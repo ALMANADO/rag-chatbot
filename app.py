@@ -55,11 +55,11 @@ st.markdown(
 
 # Session state initialization
 if "messages" not in st.session_state:
-st.session_state.messages = []
+    st.session_state.messages = []
 if "vectorstore" not in st.session_state:
-st.session_state.vectorstore = None
+    st.session_state.vectorstore = None
 if "retriever" not in st.session_state:
-st.session_state.retriever = None
+    st.session_state.retriever = None
 
 # Sidebar: Document Management
 with st.sidebar:
