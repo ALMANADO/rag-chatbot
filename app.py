@@ -118,7 +118,6 @@ def load_docx_rich(docx_path: str, source_name: str = None) -> list[LCDocument]:
 # -----------------------------
 st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 
-html, body { color-scheme: dark !important; }
 # Custom CSS (your original, unchanged)
 st.markdown(
     """
