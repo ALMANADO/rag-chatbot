@@ -25,125 +25,104 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 # Custom CSS
 st.markdown("""
     <style>
-    /* Main background - soft gradient */
+    /* Global theme: Modern, clean, with subtle gradients */
     .stApp {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
-    /* Main content area */
-    .main > div {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        backdrop-filter: blur(10px);
-    }
-
-    /* Sidebar - vibrant purple */
+    /* Sidebar enhancements */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(145deg, #8b5cf6, #7c3aed);
-        border-right: 1px solid #a78bfa;
-        border-radius: 0 20px 20px 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    /* Headers */
+    
+    /* Title styling */
     h1 {
-        color: #1e293b !important;
-        font-weight: 800 !important;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* FABULOUS Chat Bubbles */
-    div[data-testid="stChatMessage"] {
-        border-radius: 18px !important;
-        padding: 1.25rem 1.5rem !important;
-        margin-bottom: 1rem !important;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        border: 1px solid rgba(255,255,255,0.2);
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        text-align: center;
     }
     
-    /* User messages - bright blue */
-    [data-testid="stChatMessage-user"] {
-        background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-        color: white !important;
+    /* File uploader and buttons */
+    .stFileUploader label {
+        color: #ffffff;
+        font-weight: bold;
     }
     
-    /* Assistant messages - emerald green */
-    [data-testid="stChatMessage-assistant"] {
-        background: linear-gradient(135deg, #10b981, #059669) !important;
-        color: white !important;
-    }
-
-    /* Buttons - magical hover effects */
-    .stButton>button {
-        width: 100%;
-        height: 3.5em;
-        border-radius: 12px;
-        background: linear-gradient(45deg, #f59e0b, #d97706);
+    .stButton > button {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
         color: white;
         border: none;
-        font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        transition: all 0.3s ease;
+        border-radius: 25px;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
     }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
-        background: linear-gradient(45deg, #fbbf24, #f59e0b);
+    
+    .stButton > button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
     }
-    .stButton>button[type="primary"] {
-        background: linear-gradient(45deg, #ef4444, #dc2626) !important;
+    
+    /* Clear Chat button (secondary style) */
+    .stButton > button[kind="secondary"] {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
     }
-    .stButton>button[type="primary"]:hover {
-        background: linear-gradient(45deg, #f87171, #ef4444) !important;
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+    
+    /* Chat messages: User and Assistant bubbles */
+    .stChatMessage {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        backdrop-filter: blur(5px);
     }
-
-    /* File uploader - clean glass effect */
-    [data-testid="stFileUploader"] section {
-        border-radius: 12px;
-        border: 2px dashed #60a5fa;
-        background: rgba(255,255,255,0.8);
-        backdrop-filter: blur(10px);
+    
+    /* User message */
+    div[role="img"][aria-label="user"] + div > div {
+        background: linear-gradient(45deg, #a8edea, #fed6e3);
+        color: #333;
+        border-radius: 20px;
     }
-
-    /* Chat input - rounded pill */
-    .stChatInput > div > div > div > div {
-        border-radius: 25px !important;
-        border: 2px solid #f3f4f6 !important;
-        background: white !important;
-        padding: 0.75rem 1.5rem !important;
+    
+    /* Assistant message */
+    div[role="img"][aria-label="assistant"] + div > div {
+        background: linear-gradient(45deg, #ffecd2, #fcb69f);
+        color: #333;
+        border-radius: 20px;
     }
-    .stChatInput input {
-        border-radius: 25px !important;
-        border: none !important;
-        color: #1f293b !important;
-        font-size: 1rem;
-    }
-
-    /* Status messages */
-    .stStatus {
-        background: linear-gradient(90deg, #f0f9ff, #e0f2fe);
+    
+    /* Warning/Info messages */
+    div[data-testid="stAlert"] {
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid rgba(255, 193, 7, 0.5);
         border-radius: 10px;
-        border-left: 4px solid #3b82f6;
+        color: #ffffff;
     }
-
-    /* Success messages */
-    div[role="alert"] div {
-        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-        border-radius: 10px;
-        border-left: 4px solid #10b981;
+    
+    /* Chat input box */
+    .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        color: #ffffff;
+        padding: 0.75rem;
     }
-
-    /* Warnings */
-    .stAlert {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
-        border-radius: 10px;
-        border-left: 4px solid #f59e0b;
+    
+    .stTextInput > div > div > input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
     }
-    </style>
+    
+    /* Footer text */
+    .css-1d391kg {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
     """, unsafe_allow_html=True)
 
 # Title & Description
