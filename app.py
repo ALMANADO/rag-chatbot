@@ -25,23 +25,65 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 # Custom CSS
 st.markdown("""
     <style>
-    .main {
-        background-color: #0e1117;
+    /* Global background */
+    .stApp {
+        background-color: #050816;
     }
+
+    /* Main block width + centering */
+    .main > div {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #0b1020;
+        border-right: 1px solid #20263a;
+    }
+
+    /* Chat message bubbles */
+    div[data-testid="stChatMessage"] {
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+    div[data-testid="stChatMessage"][data-testid="stChatMessage-user"] {
+        background: #1a2335;
+    }
+    div[data-testid="stChatMessage"][data-testid="stChatMessage-assistant"] {
+        background: #111827;
+    }
+
+    /* Buttons */
     .stButton>button {
         width: 100%;
-        border-radius: 5px;
+        border-radius: 6px;
         height: 3em;
-        background-color: #262730;
-        color: white;
-        border: 1px solid #464855;
+        background-color: #1f2937;
+        color: #f9fafb;
+        border: 1px solid #374151;
+        font-weight: 500;
     }
     .stButton>button:hover {
-        background-color: #ff4b4b;
-        border-color: #ff4b4b;
+        background-color: #2563eb;
+        border-color: #2563eb;
     }
-    .stTextInput>div>div>input {
-        border-radius: 5px;
+
+    /* File uploader */
+    [data-testid="stFileUploader"] section {
+        border-radius: 8px;
+        border: 1px dashed #4b5563;
+        background-color: #020617;
+    }
+
+    /* Chat input */
+    div[data-baseweb="textarea"] > textarea {
+        border-radius: 999px !important;
+        border: 1px solid #374151 !important;
+        padding: 0.75rem 1rem !important;
+        background-color: #020617 !important;
+        color: #e5e7eb !important;
     }
     </style>
     """, unsafe_allow_html=True)
