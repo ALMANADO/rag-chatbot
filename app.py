@@ -4,12 +4,12 @@ import os
 import tempfile
 import sys
 
-# SQLite fix for Replit/Chroma
+# SQLite fix for Streamlit Cloud
 try:
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 except ImportError:
-pass
+    pass
 
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
