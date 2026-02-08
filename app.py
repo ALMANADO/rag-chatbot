@@ -428,6 +428,35 @@ div[data-baseweb="popover"] *{
 a{
   color: rgba(34,211,238,.95) !important;
 }
+
+
+[data-testid="stChatInput"] form{
+  position:relative !important;
+}
+
+[data-testid="stChatInput"] div[data-baseweb="textarea"]{
+  width:100% !important;
+}
+
+[data-testid="stChatInput"] textarea{
+  padding-right:78px !important;
+}
+
+button[data-testid="stChatInputSubmitButton"]{
+  position:absolute !important;
+  right:14px !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  height:44px !important;
+  width:44px !important;
+  min-width:44px !important;
+  border-radius:999px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:10 !important;
+}
 </style>
     """,
     unsafe_allow_html=True,
