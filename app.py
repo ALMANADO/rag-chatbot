@@ -82,8 +82,8 @@ if clear_btn:
 
 if process_btn:
     if uploaded_files:
-with st.status("Processing documents...", expanded=True) as status:
-    st.write("Loading files...")
+        with st.status("Processing documents...", expanded=True) as status:
+            st.write("Loading files...")
 docs = []
 for uploaded_file in uploaded_files:
 with tempfile.NamedTemporaryFile(
@@ -134,17 +134,17 @@ with st.chat_message(message["role"]):
 st.markdown(message["content"])
 
 if prompt := st.chat_input("Ask a question about your documents..."):
-st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state.messages.append({"role": "user", "content": prompt})
 with st.chat_message("user"):
-st.markdown(prompt)
+    st.markdown(prompt)
 
 with st.chat_message("assistant"):
 if st.session_state.retriever is None:
-response = "⚠️ Please upload and process documents in the sidebar first."
+    response = "⚠️ Please upload and process documents in the sidebar first."
 else:
-with st.spinner("Analyzing context..."):
+    with st.spinner("Analyzing context..."):
 try:
-groq_api_key = os.getenv("GROQ_API_KEY")
+    groq_api_key = os.getenv("GROQ_API_KEY")
 if not groq_api_key:
 response = "❌ **Error**: `GROQ_API_KEY` is missing. Please add it to your Replit Secrets."
 else:
