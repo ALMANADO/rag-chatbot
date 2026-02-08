@@ -63,7 +63,7 @@ if "retriever" not in st.session_state:
 
 # Sidebar: Document Management
 with st.sidebar:
-st.header("📂 Document Management")
+    st.header("📂 Document Management")
 uploaded_files = st.file_uploader(
 "Upload PDF or TXT files",
 accept_multiple_files=True,
