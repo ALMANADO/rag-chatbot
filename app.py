@@ -27,7 +27,7 @@ st.markdown("""
     <style>
     /* Global theme: Modern, clean, with subtle gradients */
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); /* Nice cyan-blue gradient for fresh vibe */
     }
     
     /* Sidebar enhancements */
@@ -43,6 +43,17 @@ st.markdown("""
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         text-align: center;
+    }
+    
+    /* Subtitle/Caption: Center and style the upload instruction text */
+    .stCaption {
+        text-align: center !important;
+        color: #e0f7fa !important; /* Nice light cyan for readability */
+        font-size: 1.1rem;
+        font-weight: 300;
+        margin: 0.5rem 0;
+        padding: 0 1rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
     
     /* File uploader and buttons */
