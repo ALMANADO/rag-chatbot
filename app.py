@@ -25,65 +25,123 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 # Custom CSS
 st.markdown("""
     <style>
-    /* Global background */
+    /* Main background - soft gradient */
     .stApp {
-        background-color: #050816;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-
-    /* Main block width + centering */
+    
+    /* Main content area */
     .main > div {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
     }
 
-    /* Sidebar */
+    /* Sidebar - vibrant purple */
     section[data-testid="stSidebar"] {
-        background-color: #0b1020;
-        border-right: 1px solid #20263a;
+        background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+        border-right: 1px solid #a78bfa;
+        border-radius: 0 20px 20px 0;
     }
 
-    /* Chat message bubbles */
+    /* Headers */
+    h1 {
+        color: #1e293b !important;
+        font-weight: 800 !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* FABULOUS Chat Bubbles */
     div[data-testid="stChatMessage"] {
-        border-radius: 12px;
-        padding: 0.75rem 1rem;
-        margin-bottom: 0.75rem;
+        border-radius: 18px !important;
+        padding: 1.25rem 1.5rem !important;
+        margin-bottom: 1rem !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.2);
     }
-    div[data-testid="stChatMessage"][data-testid="stChatMessage-user"] {
-        background: #1a2335;
+    
+    /* User messages - bright blue */
+    [data-testid="stChatMessage-user"] {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+        color: white !important;
     }
-    div[data-testid="stChatMessage"][data-testid="stChatMessage-assistant"] {
-        background: #111827;
+    
+    /* Assistant messages - emerald green */
+    [data-testid="stChatMessage-assistant"] {
+        background: linear-gradient(135deg, #10b981, #059669) !important;
+        color: white !important;
     }
 
-    /* Buttons */
+    /* Buttons - magical hover effects */
     .stButton>button {
         width: 100%;
-        border-radius: 6px;
-        height: 3em;
-        background-color: #1f2937;
-        color: #f9fafb;
-        border: 1px solid #374151;
-        font-weight: 500;
+        height: 3.5em;
+        border-radius: 12px;
+        background: linear-gradient(45deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background-color: #2563eb;
-        border-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        background: linear-gradient(45deg, #fbbf24, #f59e0b);
+    }
+    .stButton>button[type="primary"] {
+        background: linear-gradient(45deg, #ef4444, #dc2626) !important;
+    }
+    .stButton>button[type="primary"]:hover {
+        background: linear-gradient(45deg, #f87171, #ef4444) !important;
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
     }
 
-    /* File uploader */
+    /* File uploader - clean glass effect */
     [data-testid="stFileUploader"] section {
-        border-radius: 8px;
-        border: 1px dashed #4b5563;
-        background-color: #020617;
+        border-radius: 12px;
+        border: 2px dashed #60a5fa;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
     }
 
-    /* Chat input */
-    div[data-baseweb="textarea"] > textarea {
-        border-radius: 999px !important;
-        border: 1px solid #374151 !important;
-        padding: 0.75rem 1rem !important;
-        background-color: #020617 !important;
-        color: #e5e7eb !important;
+    /* Chat input - rounded pill */
+    .stChatInput > div > div > div > div {
+        border-radius: 25px !important;
+        border: 2px solid #f3f4f6 !important;
+        background: white !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+    .stChatInput input {
+        border-radius: 25px !important;
+        border: none !important;
+        color: #1f293b !important;
+        font-size: 1rem;
+    }
+
+    /* Status messages */
+    .stStatus {
+        background: linear-gradient(90deg, #f0f9ff, #e0f2fe);
+        border-radius: 10px;
+        border-left: 4px solid #3b82f6;
+    }
+
+    /* Success messages */
+    div[role="alert"] div {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+        border-radius: 10px;
+        border-left: 4px solid #10b981;
+    }
+
+    /* Warnings */
+    .stAlert {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-radius: 10px;
+        border-left: 4px solid #f59e0b;
     }
     </style>
     """, unsafe_allow_html=True)
