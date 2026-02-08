@@ -138,7 +138,7 @@ st.markdown("""
 
 # Title & Description
 st.title("🤖 RAG Chatbot with Groq")
-st.markdown("Upload your documents and chat with them using ultra-fast LPU inference.")
+st.title("Upload your documents and chat with them using ultra-fast LPU inference.")
 
 # Session state initialization
 if "messages" not in st.session_state:
