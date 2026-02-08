@@ -87,11 +87,11 @@ if process_btn:
 docs = []
 for uploaded_file in uploaded_files:
     with tempfile.NamedTemporaryFile(
-delete=False,
-suffix=os.path.splitext(
-uploaded_file.name)[1]) as tmp:
-tmp.write(uploaded_file.getvalue())
-tmp_path = tmp.name
+        delete=False,
+        suffix=os.path.splitext(
+        uploaded_file.name)[1]) as tmp:
+        tmp.write(uploaded_file.getvalue())
+        tmp_path = tmp.name
 
 try:
 if uploaded_file.type == "application/pdf":
