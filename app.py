@@ -94,16 +94,16 @@ for uploaded_file in uploaded_files:
         tmp_path = tmp.name
 
 try:
-if uploaded_file.type == "application/pdf":
-    loader = PyPDFLoader(tmp_path)
-else:
-    loader = TextLoader(tmp_path, encoding="utf-8")
-    docs.extend(loader.load())
+    if uploaded_file.type == "application/pdf":
+        loader = PyPDFLoader(tmp_path)
+    else:
+        loader = TextLoader(tmp_path, encoding="utf-8")
+        docs.extend(loader.load())
 finally:
-if os.path.exists(tmp_path):
-    os.unlink(tmp_path)
+    if os.path.exists(tmp_path):
+        os.unlink(tmp_path)
 
-    st.write("Splitting text into chunks...")
+        st.write("Splitting text into chunks...")
 text_splitter = RecursiveCharacterTextSplitter(
 chunk_size=1000, chunk_overlap=200)
 splits = text_splitter.split_documents(docs)
