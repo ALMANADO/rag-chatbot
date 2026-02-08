@@ -122,260 +122,253 @@ st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 st.markdown(
     """
 <style>
-/* -------------------------
-   Theme tokens (easy tweaks)
---------------------------*/
 :root{
-  --bg0: #05060a;          /* deep background */
-  --bg1: #0b0d14;          /* secondary background */
-  --card: rgba(255,255,255,.06);
-  --card2: rgba(255,255,255,.09);
-  --stroke: rgba(255,255,255,.12);
-  --stroke2: rgba(255,255,255,.08);
-  --text: #e9eef7;
-  --muted: rgba(233,238,247,.65);
-  --muted2: rgba(233,238,247,.45);
+  --bg0:#05060a;
+  --bg1:#0b0d14;
 
-  --accent: #8b5cf6;       /* purple */
-  --accent2: #22d3ee;      /* cyan */
-  --glow: rgba(139,92,246,.35);
-  --glow2: rgba(34,211,238,.22);
+  --text:#e9eef7;
+  --muted:rgba(233,238,247,.68);
+  --muted2:rgba(233,238,247,.45);
 
-  --radius-xl: 26px;
-  --radius-lg: 18px;
-  --radius-md: 14px;
+  --glass:rgba(255,255,255,.06);
+  --glass2:rgba(255,255,255,.09);
+  --stroke:rgba(255,255,255,.12);
+  --stroke2:rgba(255,255,255,.08);
+
+  --accent:#8b5cf6;
+  --accent2:#22d3ee;
+
+  --r-xl:26px;
+  --r-lg:18px;
+  --r-md:14px;
 }
 
-/* -------------------------
-   App background: starfield + subtle grid + vignette
---------------------------*/
 [data-testid="stAppViewContainer"]{
-  background: radial-gradient(1200px 600px at 50% 20%, rgba(139,92,246,.14), transparent 55%),
-              radial-gradient(800px 500px at 80% 70%, rgba(34,211,238,.10), transparent 55%),
-              linear-gradient(180deg, var(--bg0), var(--bg1));
-  color: var(--text);
-  position: relative;
-  overflow: hidden;
+  background:
+    radial-gradient(1200px 600px at 50% 20%, rgba(139,92,246,.16), transparent 55%),
+    radial-gradient(900px 520px at 85% 75%, rgba(34,211,238,.12), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  color:var(--text);
+  position:relative;
+  overflow:hidden;
 }
 
-/* Starfield + grid overlay */
 [data-testid="stAppViewContainer"]::before{
   content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-
-  /* stars */
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
   background:
     radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.40) 50%, transparent 52%),
-    radial-gradient(1px 1px at 22% 65%, rgba(255,255,255,.28) 50%, transparent 52%),
-    radial-gradient(1px 1px at 35% 30%, rgba(255,255,255,.22) 50%, transparent 52%),
-    radial-gradient(1px 1px at 44% 78%, rgba(255,255,255,.18) 50%, transparent 52%),
-    radial-gradient(1px 1px at 58% 22%, rgba(255,255,255,.26) 50%, transparent 52%),
-    radial-gradient(1px 1px at 70% 55%, rgba(255,255,255,.20) 50%, transparent 52%),
-    radial-gradient(1px 1px at 82% 35%, rgba(255,255,255,.24) 50%, transparent 52%),
-    radial-gradient(1px 1px at 90% 82%, rgba(255,255,255,.18) 50%, transparent 52%),
-
-    /* subtle grid */
+    radial-gradient(1px 1px at 22% 65%, rgba(255,255,255,.26) 50%, transparent 52%),
+    radial-gradient(1px 1px at 35% 30%, rgba(255,255,255,.20) 50%, transparent 52%),
+    radial-gradient(1px 1px at 44% 78%, rgba(255,255,255,.16) 50%, transparent 52%),
+    radial-gradient(1px 1px at 58% 22%, rgba(255,255,255,.24) 50%, transparent 52%),
+    radial-gradient(1px 1px at 70% 55%, rgba(255,255,255,.18) 50%, transparent 52%),
+    radial-gradient(1px 1px at 82% 35%, rgba(255,255,255,.22) 50%, transparent 52%),
+    radial-gradient(1px 1px at 90% 82%, rgba(255,255,255,.14) 50%, transparent 52%),
     linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-
-  background-size:
-    auto,auto,auto,auto,auto,auto,auto,auto,
-    44px 44px, 44px 44px;
-
-  opacity: .55;
-  filter: blur(.2px);
+  background-size:auto,auto,auto,auto,auto,auto,auto,auto,44px 44px,44px 44px;
+  opacity:.55;
 }
 
-/* Vignette */
 [data-testid="stAppViewContainer"]::after{
   content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
 }
 
-/* Bring actual app content above overlays */
 [data-testid="stAppViewContainer"] > *{
-  position: relative;
-  z-index: 1;
+  position:relative;
+  z-index:1;
 }
 
-/* Slightly narrow and center content like the screenshot */
 section.main > div{
-  max-width: 1050px;
-  padding-top: 1.2rem;
-  padding-bottom: 2.5rem;
+  max-width:1050px;
+  padding-top:1.2rem;
+  padding-bottom:2.5rem;
 }
 
-/* -------------------------
-   Sidebar: dark glass
---------------------------*/
+header[data-testid="stHeader"]{
+  background:transparent;
+}
+
 section[data-testid="stSidebar"]{
-  background: rgba(10,12,18,.65) !important;
-  border-right: 1px solid rgba(255,255,255,.06);
-  backdrop-filter: blur(14px);
+  background:rgba(10,12,18,.65) !important;
+  border-right:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(14px);
 }
 
 section[data-testid="stSidebar"] *{
-  color: var(--text);
+  color:var(--text);
 }
 
-/* -------------------------
-   Typography (title like screenshot)
---------------------------*/
-h1, h2, h3, p, label, span{
-  color: var(--text);
-}
-
-/* Main title glow + gradient accent */
 h1{
-  text-align: center;
-  font-weight: 650;
-  letter-spacing: -.02em;
-  margin-bottom: .2rem;
-  text-shadow: 0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
+  text-align:center;
+  font-weight:650;
+  letter-spacing:-.02em;
+  margin-bottom:.2rem;
+  color:var(--text);
+  text-shadow:0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
 }
 
-/* Streamlit header/subheader */
 h2{
-  text-align: center;
-  font-weight: 500;
-  color: var(--muted);
+  text-align:center;
+  font-weight:500;
+  color:var(--muted);
 }
 
-/* Captions / helper text */
 .stCaption, [data-testid="stCaptionContainer"]{
-  text-align: center !important;
-  color: var(--muted) !important;
+  text-align:center !important;
+  color:var(--muted) !important;
 }
 
-/* -------------------------
-   Cards: chat messages + containers
---------------------------*/
-div[data-testid="stChatMessage"]{
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: var(--radius-xl);
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.35),
-    0 0 0 1px rgba(255,255,255,.03) inset;
-  backdrop-filter: blur(12px);
-  padding: 1rem 1rem;
-  margin: .65rem 0;
-}
-
-/* Differentiate user vs assistant bubbles (based on avatar aria-label like your old CSS) */
-div[role="img"][aria-label="user"] + div > div{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset;
-}
-
-div[role="img"][aria-label="assistant"] + div > div{
-  background: linear-gradient(180deg, rgba(139,92,246,.14), rgba(255,255,255,.05)) !important;
-  border: 1px solid rgba(139,92,246,.20) !important;
-  border-radius: 18px !important;
-  box-shadow:
-    0 0 22px rgba(139,92,246,.12),
-    0 0 0 1px rgba(255,255,255,.03) inset;
-}
-
-/* Markdown text inside bubbles */
-div[data-testid="stMarkdownContainer"] p,
-div[data-testid="stMarkdownContainer"] li{
-  color: var(--text);
-}
-
-/* -------------------------
-   Buttons: pill + subtle glow like screenshot
---------------------------*/
 .stButton > button{
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  background: rgba(255,255,255,.06) !important;
-  color: var(--text) !important;
-  box-shadow: 0 10px 26px rgba(0,0,0,.35);
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:rgba(255,255,255,.06) !important;
+  color:var(--text) !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
 .stButton > button:hover{
-  transform: translateY(-1px);
-  border-color: rgba(139,92,246,.35) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12);
+  transform:translateY(-1px);
+  border-color:rgba(139,92,246,.35) !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12);
 }
 
-/* Primary buttons: gentle purple/cyan edge */
 .stButton > button[kind="primary"]{
-  background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
-  border: 1px solid rgba(139,92,246,.35) !important;
+  background:linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
+  border:1px solid rgba(139,92,246,.35) !important;
 }
 
-/* Secondary buttons: darker */
 .stButton > button[kind="secondary"]{
-  background: rgba(255,255,255,.04) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  color: var(--muted) !important;
+  background:rgba(255,255,255,.04) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  color:var(--muted) !important;
 }
 
-/* -------------------------
-   Inputs: file uploader + chat input to match dark glass
---------------------------*/
 [data-testid="stFileUploaderDropzone"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px dashed rgba(255,255,255,.16) !important;
-  border-radius: var(--radius-xl);
-  backdrop-filter: blur(10px);
+  background:rgba(255,255,255,.05) !important;
+  border:1px dashed rgba(255,255,255,.18) !important;
+  border-radius:var(--r-xl) !important;
+  padding:14px 14px !important;
 }
 
-[data-testid="stFileUploaderDropzone"] *{
-  color: var(--muted) !important;
+[data-testid="stFileUploaderDropzone"] small,
+[data-testid="stFileUploaderDropzone"] p,
+[data-testid="stFileUploaderDropzone"] span,
+[data-testid="stFileUploaderDropzone"] label{
+  color:rgba(233,238,247,.70) !important;
 }
 
-/* Chat input (the bottom textbox) */
+[data-testid="stFileUploaderDropzone"] button{
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  background:rgba(255,255,255,.08) !important;
+  color:rgba(233,238,247,.92) !important;
+  padding:8px 14px !important;
+  line-height:1.1 !important;
+  font-weight:600 !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.35) !important;
+  margin-top:10px !important;
+  width:auto !important;
+  max-width:100% !important;
+}
+
+[data-testid="stFileUploaderDropzone"] button:hover{
+  border-color:rgba(139,92,246,.35) !important;
+  box-shadow:0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.12) !important;
+  transform:translateY(-1px);
+}
+
+div[data-testid="stChatMessage"]{
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--r-xl);
+  box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset;
+  backdrop-filter:blur(12px);
+  padding:1rem 1rem;
+  margin:.65rem 0;
+}
+
+div[role="img"][aria-label="user"] + div > div{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:18px !important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+}
+
+div[role="img"][aria-label="assistant"] + div > div{
+  background:linear-gradient(180deg, rgba(139,92,246,.14), rgba(255,255,255,.05)) !important;
+  border:1px solid rgba(139,92,246,.20) !important;
+  border-radius:18px !important;
+  box-shadow:0 0 22px rgba(139,92,246,.12), 0 0 0 1px rgba(255,255,255,.03) inset;
+}
+
+div[data-testid="stMarkdownContainer"] p,
+div[data-testid="stMarkdownContainer"] li{
+  color:var(--text);
+}
+
+div[data-testid="stStatusWidget"]{
+  background:rgba(255,255,255,.05) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:var(--r-xl);
+  backdrop-filter:blur(12px);
+}
+
+div[data-testid="stAlert"]{
+  background:rgba(255,255,255,.05) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:var(--r-lg);
+  color:var(--text) !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+}
+
+[data-testid="stChatInput"]{
+  background:transparent !important;
+}
+
 [data-testid="stChatInput"] textarea{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.12) !important;
-  border-radius: 999px !important;
-  color: var(--text) !important;
-  padding: 0.75rem 1rem !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  color:rgba(233,238,247,.95) !important;
+  border-radius:999px !important;
+  padding:12px 44px 12px 16px !important;
+  min-height:48px !important;
+  max-height:140px !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.35) !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder{
-  color: var(--muted2) !important;
+  color:rgba(233,238,247,.45) !important;
 }
 
-/* Make spinners/status feel consistent */
-div[data-testid="stStatusWidget"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: var(--radius-xl);
-  backdrop-filter: blur(12px);
+[data-testid="stChatInputSubmitButton"]{
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:rgba(255,255,255,.06) !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.30) !important;
 }
 
-/* Alerts (warning/info) as dark glass */
-div[data-testid="stAlert"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: var(--radius-lg);
-  color: var(--text) !important;
-  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+[data-testid="stChatInputSubmitButton"] svg{
+  fill:rgba(233,238,247,.85) !important;
 }
 
-/* Links */
+[data-testid="stChatInputSubmitButton"]:hover{
+  border-color:rgba(34,211,238,.35) !important;
+  box-shadow:0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
+}
+
 a{
-  color: rgba(34,211,238,.95) !important;
-}
-
-/* Remove Streamlit default top padding gap on some layouts */
-header[data-testid="stHeader"]{
-  background: transparent;
+  color:rgba(34,211,238,.95) !important;
 }
 </style>
     """,
