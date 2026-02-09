@@ -29,36 +29,20 @@ from langchain_core.prompts import ChatPromptTemplate
 # DOCX Helpers (rich extraction)
 # -----------------------------
 def _extract_footnotes_from_docx(docx_path: str) -> str:
-    """
-    Best-effort extraction of footnotes from a .docx file by reading word/footnotes.xml.
-    If missing or parsing fails, returns empty string.
-    """
     try:
         with zipfile.ZipFile(docx_path) as z:
             if "word/footnotes.xml" not in z.namelist():
                 return ""
-
             xml_bytes = z.read("word/footnotes.xml")
             root = ET.fromstring(xml_bytes)
-
             ns = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
             texts = [node.text for node in root.findall(".//w:t", ns) if node.text]
-
-            footnotes_text = " ".join(texts).strip()
-            return footnotes_text
+            return " ".join(texts).strip()
     except Exception:
         return ""
 
 
 def load_docx_rich(docx_path: str, source_name: str = None) -> list[LCDocument]:
-    """
-    Extract DOCX content with:
-      - Headers & footers (per section)
-      - Paragraphs (headings marked)
-      - Tables (rows with ' | ')
-      - Footnotes (best-effort)
-    Returns list of LangChain Documents.
-    """
     doc = DocxDocument(docx_path)
     parts = []
 
@@ -72,7 +56,7 @@ def load_docx_rich(docx_path: str, source_name: str = None) -> list[LCDocument]:
         if footer_texts:
             parts.append(f"\n[FOOTER section {si + 1}]\n" + "\n".join(footer_texts))
 
-    # Body paragraphs (mark headings)
+    # Paragraphs (mark headings)
     for p in doc.paragraphs:
         text = (p.text or "").strip()
         if not text:
@@ -89,7 +73,6 @@ def load_docx_rich(docx_path: str, source_name: str = None) -> list[LCDocument]:
         for row in table.rows:
             row_cells = []
             for cell in row.cells:
-                # Flatten line breaks inside a cell
                 cell_text = " ".join(t.strip() for t in cell.text.splitlines() if t.strip()).strip()
                 row_cells.append(cell_text)
             table_lines.append(" | ".join(row_cells))
@@ -118,56 +101,53 @@ def load_docx_rich(docx_path: str, source_name: str = None) -> list[LCDocument]:
 # -----------------------------
 st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="wide")
 
-# Custom CSS (your original, unchanged)
 st.markdown(
     """
 <style>
 :root{
   --bg0:#05060a;
   --bg1:#0b0d14;
-
   --text:#e9eef7;
   --muted:rgba(233,238,247,.68);
   --muted2:rgba(233,238,247,.45);
-
   --glass:rgba(255,255,255,.06);
-  --glass2:rgba(255,255,255,.09);
   --stroke:rgba(255,255,255,.12);
-  --stroke2:rgba(255,255,255,.08);
-
   --accent:#8b5cf6;
   --accent2:#22d3ee;
-
   --r-xl:26px;
   --r-lg:18px;
-  --r-md:14px;
 }
 
 html, body, [data-testid="stAppViewContainer"]{
   color-scheme: dark !important;
 }
 
-body{
+html, body{
+  height:100% !important;
+  overflow-y:auto !important;
   background: var(--bg0) !important;
   color: var(--text) !important;
 }
 
 [data-testid="stAppViewContainer"]{
+  height:100vh !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
   background:
     radial-gradient(1200px 600px at 50% 20%, rgba(139,92,246,.16), transparent 55%),
     radial-gradient(900px 520px at 85% 75%, rgba(34,211,238,.12), transparent 55%),
     linear-gradient(180deg, var(--bg0), var(--bg1)) !important;
   color: var(--text) !important;
-  position: relative;
-  overflow: hidden;
+  position:relative;
 }
 
+/* overlays */
 [data-testid="stAppViewContainer"]::before{
   content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
   background:
     radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.40) 50%, transparent 52%),
     radial-gradient(1px 1px at 22% 65%, rgba(255,255,255,.26) 50%, transparent 52%),
@@ -185,261 +165,156 @@ body{
 
 [data-testid="stAppViewContainer"]::after{
   content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:radial-gradient(900px 520px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 85%);
 }
 
 [data-testid="stAppViewContainer"] > *{
-  position: relative;
-  z-index: 1;
+  position:relative;
+  z-index:1;
 }
 
 header[data-testid="stHeader"]{
-  background: transparent !important;
+  background:transparent !important;
 }
 
+/* give bottom space so sticky input doesn't overlay content */
 section.main > div{
-  max-width: 1050px;
-  padding-top: 1.2rem;
-  padding-bottom: 2.5rem;
+  max-width:1050px;
+  padding-top:1.2rem;
+  padding-bottom:7rem;
 }
 
 section[data-testid="stSidebar"]{
-  background: rgba(10,12,18,.65) !important;
-  border-right: 1px solid rgba(255,255,255,.06) !important;
-  backdrop-filter: blur(14px);
+  background:rgba(10,12,18,.65) !important;
+  border-right:1px solid rgba(255,255,255,.06) !important;
+  backdrop-filter:blur(14px);
+  overflow-y:auto !important;
 }
 
 section[data-testid="stSidebar"] *{
-  color: var(--text) !important;
+  color:var(--text) !important;
 }
 
 h1{
-  text-align: center;
-  font-weight: 650;
-  letter-spacing: -.02em;
-  margin-bottom: .2rem;
-  color: var(--text) !important;
-  text-shadow: 0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
+  text-align:center;
+  font-weight:650;
+  letter-spacing:-.02em;
+  margin-bottom:.2rem;
+  color:var(--text) !important;
+  text-shadow:0 0 24px rgba(255,255,255,.08), 0 0 45px rgba(139,92,246,.12);
 }
 
 h2{
-  text-align: center;
-  font-weight: 500;
-  color: var(--muted) !important;
+  text-align:center;
+  font-weight:500;
+  color:var(--muted) !important;
 }
 
 .stCaption, [data-testid="stCaptionContainer"]{
-  text-align: center !important;
-  color: var(--muted) !important;
+  text-align:center !important;
+  color:var(--muted) !important;
 }
 
+/* buttons */
 .stButton > button{
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  background: rgba(255,255,255,.06) !important;
-  color: var(--text) !important;
-  box-shadow: 0 10px 26px rgba(0,0,0,.35) !important;
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:rgba(255,255,255,.06) !important;
+  color:var(--text) !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.35) !important;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
 .stButton > button:hover{
-  transform: translateY(-1px);
-  border-color: rgba(139,92,246,.35) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12) !important;
+  transform:translateY(-1px);
+  border-color:rgba(139,92,246,.35) !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.45), 0 0 20px rgba(139,92,246,.12) !important;
 }
 
 .stButton > button[kind="primary"]{
-  background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
-  border: 1px solid rgba(139,92,246,.35) !important;
+  background:linear-gradient(90deg, rgba(139,92,246,.22), rgba(34,211,238,.16)) !important;
+  border:1px solid rgba(139,92,246,.35) !important;
 }
 
-.stButton > button[kind="secondary"]{
-  background: rgba(255,255,255,.04) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  color: var(--muted) !important;
-}
-
+/* uploader */
 [data-testid="stFileUploaderDropzone"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px dashed rgba(255,255,255,.18) !important;
-  border-radius: var(--r-xl) !important;
-  padding: 14px 14px !important;
+  background:rgba(255,255,255,.05) !important;
+  border:1px dashed rgba(255,255,255,.18) !important;
+  border-radius:var(--r-xl) !important;
+  padding:14px 14px !important;
 }
 
 [data-testid="stFileUploaderDropzone"] small,
 [data-testid="stFileUploaderDropzone"] p,
 [data-testid="stFileUploaderDropzone"] span,
 [data-testid="stFileUploaderDropzone"] label{
-  color: rgba(233,238,247,.70) !important;
+  color:rgba(233,238,247,.70) !important;
 }
 
 [data-testid="stFileUploaderDropzone"] button{
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,255,255,.14) !important;
-  background: rgba(255,255,255,.08) !important;
-  color: rgba(233,238,247,.92) !important;
-  padding: 8px 14px !important;
-  line-height: 1.1 !important;
-  font-weight: 600 !important;
-  box-shadow: 0 10px 22px rgba(0,0,0,.35) !important;
-  margin-top: 10px !important;
-  width: auto !important;
-  max-width: 100% !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  background:rgba(255,255,255,.08) !important;
+  color:rgba(233,238,247,.92) !important;
+  padding:8px 14px !important;
+  font-weight:600 !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.35) !important;
+  margin-top:10px !important;
 }
 
-[data-testid="stFileUploaderDropzone"] button:hover{
-  border-color: rgba(139,92,246,.35) !important;
-  box-shadow: 0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.12) !important;
-  transform: translateY(-1px);
-}
-
+/* chat bubbles */
 div[data-testid="stChatMessage"]{
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04)) !important;
-  border: 1px solid rgba(255,255,255,.08) !important;
-  border-radius: var(--r-xl) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset !important;
-  backdrop-filter: blur(12px);
-  padding: 1rem 1rem !important;
-  margin: .65rem 0 !important;
-}
-
-div[role="img"][aria-label="user"] + div > div{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: 18px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04)) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  border-radius:var(--r-xl) !important;
+  box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset !important;
+  backdrop-filter:blur(12px);
 }
 
 div[role="img"][aria-label="assistant"] + div > div{
-  background: linear-gradient(180deg, rgba(139,92,246,.14), rgba(255,255,255,.05)) !important;
-  border: 1px solid rgba(139,92,246,.20) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 0 22px rgba(139,92,246,.12) !important;
+  background:linear-gradient(180deg, rgba(139,92,246,.16), rgba(255,255,255,.05)) !important;
+  border:1px solid rgba(139,92,246,.22) !important;
 }
 
-div[data-testid="stMarkdownContainer"] p,
-div[data-testid="stMarkdownContainer"] li{
-  color: var(--text) !important;
-}
-
-div[data-testid="stAlert"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: var(--r-lg) !important;
-  color: var(--text) !important;
-  box-shadow: 0 10px 26px rgba(0,0,0,.35) !important;
-}
-
-div[data-testid="stStatusWidget"]{
-  background: rgba(255,255,255,.05) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: var(--r-xl) !important;
-  backdrop-filter: blur(12px);
-}
-
+/* sticky bottom input bar */
 [data-testid="stBottom"]{
-  background: transparent !important;
+  position:sticky !important;
+  bottom:0 !important;
+  z-index:9999 !important;
+  background:linear-gradient(180deg, rgba(5,6,10,0), rgba(5,6,10,.80) 35%, rgba(5,6,10,.92)) !important;
+  backdrop-filter:blur(12px);
+  padding-top:10px;
 }
 
+/* chat input base */
 [data-testid="stChatInput"],
 [data-testid="stChatInput"] form,
 [data-testid="stChatInput"] > div{
-  background: transparent !important;
+  background:transparent !important;
 }
 
-[data-testid="stChatInput"] div[data-baseweb="textarea"],
-[data-testid="stChatInput"] div[data-baseweb="textarea"] > div{
-  background: transparent !important;
-}
-
+/* textarea + input pill */
 [data-testid="stChatInput"] textarea{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.12) !important;
-  color: rgba(233,238,247,.95) !important;
-  border-radius: 999px !important;
-  padding: 12px 46px 12px 16px !important;
-  min-height: 48px !important;
-  max-height: 140px !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,.35) !important;
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  color:rgba(233,238,247,.95) !important;
+  border-radius:999px !important;
+  min-height:52px !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.35) !important;
+  padding:14px 78px 14px 18px !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder{
-  color: rgba(233,238,247,.45) !important;
+  color:rgba(233,238,247,.45) !important;
 }
 
-[data-testid="stChatInput"] textarea:focus{
-  outline: none !important;
-  border-color: rgba(139,92,246,.35) !important;
-  box-shadow: 0 14px 28px rgba(0,0,0,.45), 0 0 18px rgba(139,92,246,.10) !important;
-}
-
-[data-testid="stChatInputSubmitButton"]{
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  background: rgba(255,255,255,.06) !important;
-  box-shadow: 0 10px 22px rgba(0,0,0,.30) !important;
-}
-
-[data-testid="stChatInputSubmitButton"] svg{
-  fill: rgba(233,238,247,.85) !important;
-}
-
-[data-testid="stChatInputSubmitButton"]:hover{
-  border-color: rgba(34,211,238,.35) !important;
-  box-shadow: 0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
-}
-
-button[data-testid="stTooltipIcon"]{
-  border-radius: 999px !important;
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-}
-
-button[data-testid="stTooltipIcon"]:hover{
-  border-color: rgba(139,92,246,.35) !important;
-  box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 0 14px rgba(139,92,246,.10) !important;
-}
-
-div[data-baseweb="tooltip"],
-div[data-baseweb="popover"]{
-  z-index: 100000 !important;
-}
-
-div[data-baseweb="tooltip"] > div,
-div[data-baseweb="popover"] > div{
-  background: rgba(12,14,22,.96) !important;
-  color: rgba(233,238,247,.92) !important;
-  border: 1px solid rgba(255,255,255,.10) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 18px 45px rgba(0,0,0,.55) !important;
-  backdrop-filter: blur(12px);
-  max-width: 320px !important;
-}
-
-div[data-baseweb="tooltip"] * ,
-div[data-baseweb="popover"] *{
-  color: rgba(233,238,247,.92) !important;
-  background: transparent !important;
-}
-
-a{
-  color: rgba(34,211,238,.95) !important;
-}
-
-
+/* send button: aligned + centered */
 [data-testid="stChatInput"] form{
   position:relative !important;
-}
-
-[data-testid="stChatInput"] div[data-baseweb="textarea"]{
-  width:100% !important;
-}
-
-[data-testid="stChatInput"] textarea{
-  padding-right:78px !important;
 }
 
 button[data-testid="stChatInputSubmitButton"]{
@@ -452,18 +327,85 @@ button[data-testid="stChatInputSubmitButton"]{
   width:44px !important;
   min-width:44px !important;
   border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:rgba(255,255,255,.06) !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
   z-index:10 !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.30) !important;
 }
+
+button[data-testid="stChatInputSubmitButton"] svg{
+  fill:rgba(233,238,247,.88) !important;
+}
+
+button[data-testid="stChatInputSubmitButton"]:hover{
+  border-color:rgba(34,211,238,.35) !important;
+  box-shadow:0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
+}
+
+/* tooltip/popover fix (question-mark help etc.) */
+div[data-baseweb="tooltip"],
+div[data-baseweb="popover"]{
+  z-index:100000 !important;
+}
+
+div[data-baseweb="tooltip"] > div,
+div[data-baseweb="popover"] > div{
+  background:rgba(12,14,22,.96) !important;
+  color:rgba(233,238,247,.92) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:12px !important;
+  box-shadow:0 18px 45px rgba(0,0,0,.55) !important;
+  backdrop-filter:blur(12px);
+  max-width:320px !important;
+}
+
+div[data-baseweb="tooltip"] * ,
+div[data-baseweb="popover"] *{
+  color:rgba(233,238,247,.92) !important;
+  background:transparent !important;
+}
+
+/* scrollbar styling (page + sidebar + message container) */
+[data-testid="stAppViewContainer"]::-webkit-scrollbar,
+section[data-testid="stSidebar"]::-webkit-scrollbar,
+div[data-testid="stVerticalBlock"]::-webkit-scrollbar{
+  width:10px;
+}
+
+[data-testid="stAppViewContainer"]::-webkit-scrollbar-track,
+section[data-testid="stSidebar"]::-webkit-scrollbar-track,
+div[data-testid="stVerticalBlock"]::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.04);
+  border-radius:999px;
+}
+
+[data-testid="stAppViewContainer"]::-webkit-scrollbar-thumb,
+section[data-testid="stSidebar"]::-webkit-scrollbar-thumb,
+div[data-testid="stVerticalBlock"]::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg, rgba(139,92,246,.55), rgba(34,211,238,.35));
+  border:2px solid rgba(0,0,0,.35);
+  border-radius:999px;
+}
+
+[data-testid="stAppViewContainer"],
+section[data-testid="stSidebar"],
+div[data-testid="stVerticalBlock"]{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(139,92,246,.60) rgba(255,255,255,.05);
+}
+
+a{ color:rgba(34,211,238,.95) !important; }
 </style>
-    """,
+""",
     unsafe_allow_html=True,
 )
 
 st.title("🤖 RAG Chatbot with Groq")
 st.header("Upload your documents and chat with them using ultra-fast LPU inference.")
+
 
 # Session state init
 if "messages" not in st.session_state:
@@ -472,6 +414,7 @@ if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = None
 if "retriever" not in st.session_state:
     st.session_state.retriever = None
+
 
 # Sidebar
 with st.sidebar:
@@ -501,13 +444,11 @@ with st.sidebar:
 
                 for uploaded_file in uploaded_files:
                     suffix = os.path.splitext(uploaded_file.name)[1].lower()
-
                     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                         tmp.write(uploaded_file.getvalue())
                         tmp_path = tmp.name
 
                     try:
-                        # Use extension routing (more reliable than MIME types)
                         if suffix == ".pdf":
                             loader = PyPDFLoader(tmp_path)
                             docs.extend(loader.load())
@@ -528,10 +469,7 @@ with st.sidebar:
                 embeddings = FakeEmbeddings(size=384)
 
                 st.write("Building vector index...")
-                st.session_state.vectorstore = Chroma.from_documents(
-                    documents=splits,
-                    embedding=embeddings,
-                )
+                st.session_state.vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
                 st.session_state.retriever = st.session_state.vectorstore.as_retriever(search_kwargs={"k": 4})
 
                 status.update(label="✅ Processing Complete!", state="complete", expanded=False)
@@ -542,52 +480,58 @@ with st.sidebar:
     st.divider()
     st.info("Powered by Groq LPU Inference | Built with LangChain & Streamlit")
 
-# Chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
 
-# Chat input
+# -----------------------------
+# Scrollable Chat History Area
+# -----------------------------
+chat_box = st.container(height=560, border=False)
+with chat_box:
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+
+# -----------------------------
+# Chat Input
+# -----------------------------
 if prompt := st.chat_input("Ask a question about your documents..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
 
-    with st.chat_message("assistant"):
-        if st.session_state.retriever is None:
-            response = "⚠️ Please upload and process documents in the sidebar first."
-        else:
-            with st.spinner("Analyzing context..."):
-                try:
-                    groq_api_key = os.getenv("GROQ_API_KEY")
-                    if not groq_api_key:
-                        response = "❌ **Error**: `GROQ_API_KEY` is missing. Please add it to Streamlit Secrets."
-                    else:
-                        llm = ChatGroq(
-                            model="llama-3.1-8b-instant",
-                            temperature=0.0,
-                            api_key=groq_api_key,
-                        )
+    if st.session_state.retriever is None:
+        response = "⚠️ Please upload and process documents in the sidebar first."
+    else:
+        with st.spinner("Analyzing context..."):
+            try:
+                groq_api_key = os.getenv("GROQ_API_KEY")
+                if not groq_api_key:
+                    response = "❌ **Error**: `GROQ_API_KEY` is missing. Please add it to Streamlit Secrets."
+                else:
+                    llm = ChatGroq(
+                        model="llama-3.1-8b-instant",
+                        temperature=0.0,
+                        api_key=groq_api_key,
+                    )
 
-                        system_prompt = (
-                            "You are a helpful AI assistant. "
-                            "Use the provided context to answer the user's question accurately. "
-                            "If the answer isn't in the context, say you don't know based on the documents. "
-                            "Keep your response professional and helpful.\n\n"
-                            "Context:\n{context}"
-                        )
+                    system_prompt = (
+                        "You are a helpful AI assistant. "
+                        "Use the provided context to answer the user's question accurately. "
+                        "If the answer isn't in the context, say you don't know based on the documents. "
+                        "Keep your response professional and helpful.\n\n"
+                        "Context:\n{context}"
+                    )
 
-                        prompt_template = ChatPromptTemplate.from_messages(
-                            [("system", system_prompt), ("human", "{input}")]
-                        )
+                    prompt_template = ChatPromptTemplate.from_messages(
+                        [("system", system_prompt), ("human", "{input}")]
+                    )
 
-                        question_answer_chain = create_stuff_documents_chain(llm, prompt_template)
-                        rag_chain = create_retrieval_chain(st.session_state.retriever, question_answer_chain)
+                    question_answer_chain = create_stuff_documents_chain(llm, prompt_template)
+                    rag_chain = create_retrieval_chain(st.session_state.retriever, question_answer_chain)
 
-                        result = rag_chain.invoke({"input": prompt})
-                        response = result["answer"]
-                except Exception as e:
-                    response = f"❌ **Error**: {str(e)}"
+                    result = rag_chain.invoke({"input": prompt})
+                    response = result["answer"]
 
-        st.markdown(response)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+            except Exception as e:
+                response = f"❌ **Error**: {str(e)}"
+
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
