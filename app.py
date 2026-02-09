@@ -398,6 +398,35 @@ div[data-testid="stVerticalBlock"]{
 }
 
 a{ color:rgba(34,211,238,.95) !important; }
+/* ---- Smaller chat input bar (width + height) ---- */
+[data-testid="stChatInput"]{
+  max-width: 920px !important;   /* reduce width */
+  margin: 0 auto !important;     /* center it */
+}
+
+/* Make the sticky bottom area less tall */
+[data-testid="stBottom"]{
+  padding-top: 6px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Reduce textarea height + padding */
+[data-testid="stChatInput"] textarea{
+  min-height: 44px !important;      /* reduce height */
+  max-height: 120px !important;
+  padding: 10px 62px 10px 14px !important; /* smaller padding, space for send button */
+  font-size: 0.95rem !important;    /* slightly smaller text */
+}
+
+/* Smaller send button and keep it centered */
+button[data-testid="stChatInputSubmitButton"]{
+  height: 36px !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
