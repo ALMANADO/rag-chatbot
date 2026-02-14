@@ -26,7 +26,24 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import FakeEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
+# add this import
+from anthropic import Anthropic
+from langchain_anthropic import ChatAnthropic
 
+# ...
+anthropic_api_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY"))
+if not anthropic_api_key:
+    response = "❌ **Error**: `ANTHROPIC_API_KEY` is missing. Please add it to Streamlit Secrets or env."
+else:
+    # Build the low-level client yourself (older SDKs accept this)
+    aclient = Anthropic(api_key=anthropic_api_key)
+
+    llm = ChatAnthropic(
+        client=aclient,                       # <-- pass client instead of api_key
+        model="claude-3-haiku-20240307",
+        temperature=0.0,
+        max_tokens=1024,
+    )
 
 # -----------------------------
 # DOCX Helpers (rich extraction)
