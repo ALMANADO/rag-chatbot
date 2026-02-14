@@ -17,33 +17,13 @@ from langchain_core.documents import Document as LCDocument
 
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-
-# 👉 Switched from Groq to Anthropic (Claude)
-from langchain_anthropic import ChatAnthropic
-
+from langchain_groq import ChatGroq
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import FakeEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
-# add this import
-from anthropic import Anthropic
-from langchain_anthropic import ChatAnthropic
 
-# ...
-anthropic_api_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY"))
-if not anthropic_api_key:
-    response = "❌ **Error**: `ANTHROPIC_API_KEY` is missing. Please add it to Streamlit Secrets or env."
-else:
-    # Build the low-level client yourself (older SDKs accept this)
-    aclient = Anthropic(api_key=anthropic_api_key)
-
-    llm = ChatAnthropic(
-        client=aclient,                       # <-- pass client instead of api_key
-        model="claude-3-haiku-20240307",
-        temperature=0.0,
-        max_tokens=1024,
-    )
 
 # -----------------------------
 # DOCX Helpers (rich extraction)
@@ -365,7 +345,7 @@ button[data-testid="stChatInputSubmitButton"]:hover{
   box-shadow:0 14px 28px rgba(0,0,0,.40), 0 0 18px rgba(34,211,238,.10) !important;
 }
 
-/* tooltip/popover fix */
+/* tooltip/popover fix (question-mark help etc.) */
 div[data-baseweb="tooltip"],
 div[data-baseweb="popover"]{
   z-index:100000 !important;
@@ -388,7 +368,7 @@ div[data-baseweb="popover"] *{
   background:transparent !important;
 }
 
-/* scrollbar styling */
+/* scrollbar styling (page + sidebar + message container) */
 [data-testid="stAppViewContainer"]::-webkit-scrollbar,
 section[data-testid="stSidebar"]::-webkit-scrollbar,
 div[data-testid="stVerticalBlock"]::-webkit-scrollbar{
@@ -418,11 +398,10 @@ div[data-testid="stVerticalBlock"]{
 }
 
 a{ color:rgba(34,211,238,.95) !important; }
-
 /* ---- Smaller chat input bar (width + height) ---- */
 [data-testid="stChatInput"]{
-  max-width: 920px !important;
-  margin: 0 auto !important;
+  max-width: 920px !important;   /* reduce width */
+  margin: 0 auto !important;     /* center it */
 }
 
 /* Make the sticky bottom area less tall */
@@ -433,10 +412,10 @@ a{ color:rgba(34,211,238,.95) !important; }
 
 /* Reduce textarea height + padding */
 [data-testid="stChatInput"] textarea{
-  min-height: 44px !important;
+  min-height: 44px !important;      /* reduce height */
   max-height: 120px !important;
-  padding: 10px 62px 10px 14px !important;
-  font-size: 0.95rem !important;
+  padding: 10px 62px 10px 14px !important; /* smaller padding, space for send button */
+  font-size: 0.95rem !important;    /* slightly smaller text */
 }
 
 /* Smaller send button and keep it centered */
@@ -453,8 +432,8 @@ button[data-testid="stChatInputSubmitButton"]{
     unsafe_allow_html=True,
 )
 
-st.title("🤖 RAG Chatbot with Claude (Anthropic)")
-st.header("Upload your documents and chat with them using Claude (free tier friendly).")
+st.title("🤖 RAG Chatbot with Groq")
+st.header("Upload your documents and chat with them using ultra-fast LPU inference.")
 
 
 # Session state init
@@ -516,8 +495,6 @@ with st.sidebar:
                 splits = text_splitter.split_documents(docs)
 
                 st.write("Generating embeddings...")
-                # NOTE: Fake embeddings are for demo only.
-                # For better retrieval quality, replace with a real embedding model.
                 embeddings = FakeEmbeddings(size=384)
 
                 st.write("Building vector index...")
@@ -530,7 +507,7 @@ with st.sidebar:
             st.warning("Please upload files first.")
 
     st.divider()
-    st.info("Powered by Claude (Anthropic) | Built with LangChain & Streamlit")
+    st.info("Powered by Groq LPU Inference | Built with LangChain & Streamlit")
 
 
 # -----------------------------
@@ -554,16 +531,14 @@ if prompt := st.chat_input("Ask a question about your documents..."):
     else:
         with st.spinner("Analyzing context..."):
             try:
-                # Prefer Streamlit Secrets, fallback to environment
-                anthropic_api_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY"))
-                if not anthropic_api_key:
-                    response = "❌ **Error**: `ANTHROPIC_API_KEY` is missing. Please add it to Streamlit Secrets or env."
+                groq_api_key = os.getenv("GROQ_API_KEY")
+                if not groq_api_key:
+                    response = "❌ **Error**: `GROQ_API_KEY` is missing. Please add it to Streamlit Secrets."
                 else:
-                    llm = ChatAnthropic(
-                        model="claude-3-haiku-20240307",  # free-tier friendly; change if you have access to newer haiku
+                    llm = ChatGroq(
+                        model="llama-3.1-8b-instant",
                         temperature=0.0,
-                        max_tokens=1024,
-                        anthropic_api_key=anthropic_api_key,
+                        api_key=groq_api_key,
                     )
 
                     system_prompt = (
